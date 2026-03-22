@@ -128,7 +128,7 @@ export default function App() {
         <div
           style={{
             ...styles.heroInner,
-            gridTemplateColumns: isMobile ? "1fr" : "1.1fr 0.9fr",
+            gridTemplateColumns: "1fr",
             padding: isMobile ? "42px 20px 48px" : "72px 32px 80px",
             gap: isMobile ? "28px" : "42px",
           }}
@@ -168,27 +168,7 @@ export default function App() {
             </div>
           </div>
 
-          <div style={styles.heroRight}>
-            <div
-              style={{
-                ...styles.photoCard,
-                maxWidth: isMobile ? "100%" : "395px",
-              }}
-            >
-              <img
-                src="/images/brian.png"
-                alt="Brian DeMarco"
-                style={{
-                  ...styles.photo,
-                  height: isMobile ? "400px" : "520px",
-                }}
-              />
-              <div style={styles.photoInfo}>
-                <div style={styles.photoName}>Brian DeMarco</div>
-                <div style={styles.photoRole}>Luxury Real Estate Advisor</div>
-              </div>
-            </div>
-          </div>
+        
         </div>
       </section>
 
