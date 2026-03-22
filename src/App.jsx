@@ -1,9 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/myknooen";
 
 export default function App() {
+  const [status, setStatus] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 900);
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setStatus("sending");
+
+    const formData = new FormData(e.target);
+
+    try {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        body: formData,
+        headers: { Accept: "application/json" },
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        e.target.reset();
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  }
+
   return (
     <div style={styles.page}>
-      <header style={styles.header}>
+      <header
+        style={{
+          ...styles.header,
+          flexDirection: isMobile ? "column" : "row",
+          alignItems: isMobile ? "flex-start" : "center",
+          gap: isMobile ? "12px" : "0",
+        }}
+      >
         <div style={styles.logoWrap}>
           <div style={styles.logoMark}>▲</div>
           <div>
@@ -13,39 +56,96 @@ export default function App() {
             </div>
           </div>
         </div>
-        <div style={styles.headerContact}>
+
+        <div
+          style={{
+            ...styles.headerContact,
+            textAlign: isMobile ? "left" : "right",
+          }}
+        >
           <div>Brian DeMarco</div>
           <div>(908) 812-5014</div>
           <div>briannjrealtor@gmail.com</div>
         </div>
       </header>
 
-      <section style={styles.hero}>
-        <div style={styles.heroOverlay} />
-        <div style={styles.heroContent}>
-          <p style={styles.eyebrow}>NEW JERSEY LUXURY REAL ESTATE</p>
-          <h1 style={styles.heroTitle}>
-            Elevated representation for buyers, sellers, and investors.
-          </h1>
-          <p style={styles.heroText}>
-            New Jersey Lux Realty is built around precision, presentation, and
-            local market expertise. From standout homes to strategic
-            opportunities, every move is handled with intention.
-          </p>
+      <section
+        style={{
+          ...styles.hero,
+          backgroundImage: `linear-gradient(90deg, rgba(0,0,0,0.84) 0%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.28) 100%), url('/images/sleepy-hollow.jpg')`,
+        }}
+      >
+        <div
+          style={{
+            ...styles.heroInner,
+            gridTemplateColumns: isMobile ? "1fr" : "1.1fr 0.9fr",
+            padding: isMobile ? "42px 20px 48px" : "72px 32px 80px",
+            gap: isMobile ? "28px" : "42px",
+          }}
+        >
+          <div style={styles.heroLeft}>
+            <p style={styles.eyebrow}>NEW JERSEY LUXURY REAL ESTATE</p>
+            <h1
+              style={{
+                ...styles.heroTitle,
+                fontSize: isMobile ? "38px" : "60px",
+                maxWidth: isMobile ? "100%" : "760px",
+              }}
+            >
+              Elevated representation for buyers, sellers, and investors.
+            </h1>
+            <p
+              style={{
+                ...styles.heroText,
+                fontSize: isMobile ? "17px" : "18px",
+              }}
+            >
+              New Jersey Lux Realty is built around precision, presentation, and
+              local market expertise. From standout homes to strategic
+              opportunities, every move is handled with intention.
+            </p>
 
-          <div style={styles.heroButtons}>
-            <a href="#contact" style={styles.primaryBtn}>
-              Schedule a Consultation
-            </a>
-            <a href="#markets" style={styles.secondaryBtn}>
-              Explore Markets
-            </a>
+            <div style={styles.heroButtons}>
+              <a href="#contact" style={styles.primaryBtn}>
+                Schedule a Consultation
+              </a>
+              <a href="#markets" style={styles.secondaryBtn}>
+                Explore Markets
+              </a>
+            </div>
+          </div>
+
+          <div style={styles.heroRight}>
+            <div
+              style={{
+                ...styles.photoCard,
+                maxWidth: isMobile ? "100%" : "395px",
+              }}
+            >
+              <img
+                src="/images/brian.png"
+                alt="Brian DeMarco"
+                style={{
+                  ...styles.photo,
+                  height: isMobile ? "400px" : "520px",
+                }}
+              />
+              <div style={styles.photoInfo}>
+                <div style={styles.photoName}>Brian DeMarco</div>
+                <div style={styles.photoRole}>Luxury Real Estate Advisor</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       <section style={styles.statsSection}>
-        <div style={styles.statsGrid}>
+        <div
+          style={{
+            ...styles.statsGrid,
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+          }}
+        >
           <div style={styles.statCard}>
             <div style={styles.statNumber}>Luxury</div>
             <div style={styles.statLabel}>Brand Positioning</div>
@@ -63,10 +163,15 @@ export default function App() {
 
       <section id="about" style={styles.section}>
         <div style={styles.sectionInner}>
-          <div style={styles.sectionHeadingWrap}>
-            <p style={styles.sectionEyebrow}>ABOUT</p>
-            <h2 style={styles.sectionTitle}>A refined, disciplined approach to real estate.</h2>
-          </div>
+          <p style={styles.sectionEyebrow}>ABOUT</p>
+          <h2
+            style={{
+              ...styles.sectionTitle,
+              fontSize: isMobile ? "30px" : "40px",
+            }}
+          >
+            A refined, disciplined approach to real estate.
+          </h2>
           <p style={styles.sectionText}>
             Brian DeMarco brings a polished, high-trust approach to New Jersey
             real estate. Built on service, preparation, and strong execution,
@@ -78,12 +183,22 @@ export default function App() {
 
       <section id="markets" style={styles.darkSection}>
         <div style={styles.sectionInner}>
-          <div style={styles.sectionHeadingWrap}>
-            <p style={styles.sectionEyebrow}>FEATURED MARKETS</p>
-            <h2 style={styles.sectionTitle}>Distinctive communities. Tailored strategy.</h2>
-          </div>
+          <p style={styles.sectionEyebrow}>FEATURED MARKETS</p>
+          <h2
+            style={{
+              ...styles.sectionTitle,
+              fontSize: isMobile ? "30px" : "40px",
+            }}
+          >
+            Distinctive communities. Tailored strategy.
+          </h2>
 
-          <div style={styles.cardGrid}>
+          <div
+            style={{
+              ...styles.cardGrid,
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+            }}
+          >
             <div style={styles.marketCard}>
               <h3 style={styles.cardTitle}>Sleepy Hollow</h3>
               <p style={styles.cardText}>
@@ -113,17 +228,27 @@ export default function App() {
 
       <section style={styles.section}>
         <div style={styles.sectionInner}>
-          <div style={styles.sectionHeadingWrap}>
-            <p style={styles.sectionEyebrow}>SERVICES</p>
-            <h2 style={styles.sectionTitle}>Representation designed around results.</h2>
-          </div>
+          <p style={styles.sectionEyebrow}>SERVICES</p>
+          <h2
+            style={{
+              ...styles.sectionTitle,
+              fontSize: isMobile ? "30px" : "40px",
+            }}
+          >
+            Representation designed around results.
+          </h2>
 
-          <div style={styles.servicesGrid}>
+          <div
+            style={{
+              ...styles.cardGrid,
+              gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+            }}
+          >
             <div style={styles.serviceCard}>
               <h3 style={styles.cardTitle}>Buy</h3>
               <p style={styles.cardText}>
-                Clear guidance, strong positioning, and a focused search strategy
-                tailored to your goals.
+                Clear guidance, strong positioning, and a focused search
+                strategy tailored to your goals.
               </p>
             </div>
 
@@ -146,35 +271,103 @@ export default function App() {
         </div>
       </section>
 
-      <section style={styles.ctaSection}>
-        <div style={styles.ctaInner}>
-          <p style={styles.sectionEyebrow}>NEXT MOVE</p>
-          <h2 style={styles.ctaTitle}>Ready to make your next real estate move with confidence?</h2>
-          <p style={styles.ctaText}>
-            Whether you’re exploring the market, preparing to sell, or looking
-            for the right opportunity, New Jersey Lux Realty is built to help
-            you move with clarity.
-          </p>
-          <a href="#contact" style={styles.primaryBtn}>
-            Start the Conversation
-          </a>
-        </div>
-      </section>
-
       <section id="contact" style={styles.contactSection}>
-        <div style={styles.sectionInner}>
-          <div style={styles.sectionHeadingWrap}>
+        <div
+          style={{
+            ...styles.contactInner,
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: isMobile ? "28px" : "36px",
+          }}
+        >
+          <div>
             <p style={styles.sectionEyebrow}>CONTACT</p>
-            <h2 style={styles.sectionTitle}>Let’s connect.</h2>
+            <h2
+              style={{
+                ...styles.sectionTitle,
+                fontSize: isMobile ? "30px" : "40px",
+              }}
+            >
+              Start the conversation.
+            </h2>
+            <p style={styles.sectionText}>
+              Whether you’re buying, selling, or investing, reach out for a
+              confidential consultation and a tailored strategy.
+            </p>
+
+            <div style={styles.contactInfoCard}>
+              <p style={styles.contactLine}>
+                <strong>Brian DeMarco</strong>
+              </p>
+              <p style={styles.contactLine}>(908) 812-5014</p>
+              <p style={styles.contactLine}>briannjrealtor@gmail.com</p>
+              <p style={styles.contactLine}>NewJerseyLuxRealty.com</p>
+            </div>
           </div>
 
-          <div style={styles.contactCard}>
-            <p style={styles.contactLine}>
-              <strong>Brian DeMarco</strong>
-            </p>
-            <p style={styles.contactLine}>(908) 812-5014</p>
-            <p style={styles.contactLine}>briannjrealtor@gmail.com</p>
-            <p style={styles.contactLine}>NewJerseyLuxRealty.com</p>
+          <div style={styles.formWrap}>
+            <form onSubmit={handleSubmit} style={styles.form}>
+              <input type="hidden" name="formType" value="lead-form" />
+              <input type="hidden" name="source" value="website-homepage" />
+
+              <label style={styles.label}>
+                Name
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  style={styles.input}
+                  placeholder="Your name"
+                />
+              </label>
+
+              <label style={styles.label}>
+                Email
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  style={styles.input}
+                  placeholder="you@example.com"
+                />
+              </label>
+
+              <label style={styles.label}>
+                Phone
+                <input
+                  type="tel"
+                  name="phone"
+                  style={styles.input}
+                  placeholder="(908) 555-5555"
+                />
+              </label>
+
+              <label style={styles.label}>
+                How can I help?
+                <textarea
+                  name="message"
+                  required
+                  rows="5"
+                  style={styles.textarea}
+                  placeholder="Tell me a bit about what you're looking for..."
+                />
+              </label>
+
+              <button type="submit" style={styles.submitBtn}>
+                {status === "sending" ? "Sending..." : "Send Inquiry"}
+              </button>
+
+              {status === "success" && (
+                <p style={styles.successMsg}>
+                  Thank you — your message was sent successfully.
+                </p>
+              )}
+
+              {status === "error" && (
+                <p style={styles.errorMsg}>
+                  Something went wrong. Please try again.
+                </p>
+              )}
+            </form>
           </div>
         </div>
       </section>
@@ -194,7 +387,7 @@ const styles = {
   header: {
     position: "sticky",
     top: 0,
-    zIndex: 10,
+    zIndex: 20,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -231,7 +424,6 @@ const styles = {
   },
 
   headerContact: {
-    textAlign: "right",
     fontSize: "13px",
     color: "#d7d1c3",
     lineHeight: 1.5,
@@ -242,22 +434,33 @@ const styles = {
     minHeight: "78vh",
     display: "flex",
     alignItems: "center",
-    background:
-      "linear-gradient(135deg, rgba(10,10,10,0.96), rgba(18,18,18,0.88)), url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  },
+
+  heroInner: {
+    position: "relative",
+    zIndex: 1,
+    maxWidth: "1280px",
+    width: "100%",
+    margin: "0 auto",
+    display: "grid",
+    alignItems: "center",
+  },
+
+  heroLeft: {
+    maxWidth: "760px",
+  },
+
+  heroRight: {
+    display: "flex",
+    justifyContent: "center",
   },
 
   heroOverlay: {
     position: "absolute",
     inset: 0,
-    background:
-      "linear-gradient(90deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.25) 100%)",
-  },
-
-  heroContent: {
-    position: "relative",
-    zIndex: 1,
-    maxWidth: "760px",
-    padding: "80px 32px",
   },
 
   eyebrow: {
@@ -270,15 +473,12 @@ const styles = {
   },
 
   heroTitle: {
-    fontSize: "58px",
     lineHeight: 1.05,
     margin: "0 0 20px 0",
     fontWeight: 800,
-    maxWidth: "900px",
   },
 
   heroText: {
-    fontSize: "18px",
     lineHeight: 1.7,
     color: "#ddd6c6",
     maxWidth: "640px",
@@ -311,6 +511,40 @@ const styles = {
     fontWeight: 700,
   },
 
+  photoCard: {
+    width: "100%",
+    background: "rgba(10,10,10,0.88)",
+    border: "1px solid rgba(212,175,55,0.2)",
+    borderRadius: "22px",
+    overflow: "hidden",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+  },
+
+  photo: {
+    display: "block",
+    width: "100%",
+    objectFit: "cover",
+    objectPosition: "center top",
+    backgroundColor: "#111",
+  },
+
+  photoInfo: {
+    padding: "18px 20px 22px",
+  },
+
+  photoName: {
+    fontSize: "24px",
+    fontWeight: 700,
+    marginBottom: "6px",
+  },
+
+  photoRole: {
+    fontSize: "14px",
+    color: "#c8b889",
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+  },
+
   statsSection: {
     padding: "28px 32px 18px",
     backgroundColor: "#0a0a0a",
@@ -318,10 +552,9 @@ const styles = {
 
   statsGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: "18px",
     maxWidth: "1200px",
     margin: "0 auto",
+    gap: "18px",
   },
 
   statCard: {
@@ -358,10 +591,6 @@ const styles = {
     margin: "0 auto",
   },
 
-  sectionHeadingWrap: {
-    marginBottom: "28px",
-  },
-
   sectionEyebrow: {
     color: "#d4af37",
     fontSize: "12px",
@@ -372,9 +601,8 @@ const styles = {
   },
 
   sectionTitle: {
-    fontSize: "38px",
     lineHeight: 1.15,
-    margin: 0,
+    margin: "0 0 24px 0",
     color: "#f5f1e8",
   },
 
@@ -387,7 +615,6 @@ const styles = {
 
   cardGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
     gap: "20px",
   },
 
@@ -400,7 +627,6 @@ const styles = {
 
   servicesGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
     gap: "20px",
   },
 
@@ -424,46 +650,30 @@ const styles = {
     margin: 0,
   },
 
-  ctaSection: {
-    padding: "90px 32px",
-    background:
-      "linear-gradient(135deg, rgba(212,175,55,0.08), rgba(255,255,255,0.02))",
-    borderTop: "1px solid rgba(212,175,55,0.12)",
-    borderBottom: "1px solid rgba(212,175,55,0.12)",
-  },
-
-  ctaInner: {
-    maxWidth: "900px",
-    margin: "0 auto",
-    textAlign: "center",
-  },
-
-  ctaTitle: {
-    fontSize: "42px",
-    margin: "0 0 18px 0",
-    lineHeight: 1.2,
-  },
-
-  ctaText: {
-    fontSize: "18px",
-    lineHeight: 1.8,
-    color: "#d7d1c3",
-    maxWidth: "760px",
-    margin: "0 auto 28px",
-  },
-
   contactSection: {
-    padding: "80px 32px 100px",
+    padding: "84px 32px 100px",
     backgroundColor: "#050505",
+    borderTop: "1px solid rgba(212,175,55,0.12)",
   },
 
-  contactCard: {
-    marginTop: "20px",
+  contactInner: {
+    maxWidth: "1200px",
+    margin: "0 auto",
+    display: "grid",
+    alignItems: "start",
+  },
+
+  contactLeft: {
+    paddingRight: "10px",
+  },
+
+  contactInfoCard: {
+    marginTop: "22px",
     border: "1px solid rgba(212,175,55,0.18)",
     borderRadius: "20px",
-    padding: "28px",
-    maxWidth: "520px",
+    padding: "24px",
     backgroundColor: "#0d0d0d",
+    maxWidth: "460px",
   },
 
   contactLine: {
@@ -471,5 +681,70 @@ const styles = {
     lineHeight: 1.8,
     color: "#e6dfcf",
     margin: "0 0 6px 0",
+  },
+
+  formWrap: {
+    border: "1px solid rgba(212,175,55,0.18)",
+    borderRadius: "22px",
+    backgroundColor: "#0d0d0d",
+    padding: "28px",
+  },
+
+  form: {
+    display: "grid",
+    gap: "18px",
+  },
+
+  label: {
+    display: "grid",
+    gap: "8px",
+    fontSize: "14px",
+    color: "#d7d1c3",
+    fontWeight: 600,
+  },
+
+  input: {
+    backgroundColor: "#121212",
+    color: "#f5f1e8",
+    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: "14px",
+    padding: "14px 16px",
+    fontSize: "15px",
+    outline: "none",
+  },
+
+  textarea: {
+    backgroundColor: "#121212",
+    color: "#f5f1e8",
+    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: "14px",
+    padding: "14px 16px",
+    fontSize: "15px",
+    outline: "none",
+    resize: "vertical",
+    minHeight: "120px",
+  },
+
+  submitBtn: {
+    backgroundColor: "#d4af37",
+    color: "#111",
+    border: "none",
+    borderRadius: "999px",
+    padding: "15px 22px",
+    fontSize: "15px",
+    fontWeight: 800,
+    cursor: "pointer",
+  },
+
+  successMsg: {
+    color: "#8ed49a",
+    margin: 0,
+    fontSize: "14px",
+  },
+
+  errorMsg: {
+    color: "#ff8f8f",
+    margin: 0,
+    fontSize: "14px",
   },
 };
