@@ -182,18 +182,18 @@ export default function App() {
             alignItems: "center",
           }}
         >
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ display: "flex", justifyContent: "flex-start" }}>
             <img
-              src="/images/brian.png"
-              alt="Brian DeMarco"
-              style={{
-                width: "100%",
-                maxWidth: "420px",
-                borderRadius: "18px",
-                objectFit: "cover",
-                boxShadow: "0 20px 50px rgba(0,0,0,0.4)",
-              }}
-            />
+  src="/images/brian.png"
+  alt="Brian DeMarco"
+  style={{
+    width: "100%",
+    maxWidth: "520px",
+    borderRadius: "22px",
+    objectFit: "cover",
+    boxShadow: "0 25px 70px rgba(0,0,0,0.5)",
+  }}
+/>
           </div>
 
           <div>
