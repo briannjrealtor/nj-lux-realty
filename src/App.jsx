@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/myknooen";
 
@@ -47,15 +47,57 @@ const reviewHighlights = [
   },
 ];
 
+function RevealSection({ children, delay = 0 }) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(node);
+        }
+      },
+      { threshold: 0.18 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(36px)",
+        transition: `opacity 0.8s ease ${delay}s, transform 0.8s ease ${delay}s`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function App() {
   const [status, setStatus] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const [heroVisible, setHeroVisible] = useState(false);
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth < 900);
     onResize();
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setHeroVisible(true), 120);
+    return () => clearTimeout(timer);
   }, []);
 
   async function handleSubmit(e) {
@@ -81,6 +123,16 @@ export default function App() {
       setStatus("error");
     }
   }
+
+  const handleButtonEnter = (e) => {
+    e.currentTarget.style.transform = "translateY(-2px)";
+    e.currentTarget.style.boxShadow = "0 12px 28px rgba(212,175,55,0.22)";
+  };
+
+  const handleButtonLeave = (e) => {
+    e.currentTarget.style.transform = "translateY(0)";
+    e.currentTarget.style.boxShadow = "none";
+  };
 
   return (
     <div style={styles.page}>
@@ -122,7 +174,7 @@ export default function App() {
         style={{
           ...styles.hero,
           backgroundImage:
-            "linear-gradient(90deg, rgba(0,0,0,0.84) 0%, rgba(0,0,0,0.6) 45%, rgba(0,0,0,0.28) 100%), url('/images/sleepy-hollow.jpg')",
+            "linear-gradient(90deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 40%, rgba(0,0,0,0.35) 75%, rgba(0,0,0,0.15) 100%), url('/images/sleepy-hollow.jpg')",
         }}
       >
         <div
@@ -133,13 +185,21 @@ export default function App() {
             gap: isMobile ? "28px" : "42px",
           }}
         >
-          <div style={styles.heroLeft}>
+          <div
+            style={{
+              ...styles.heroLeft,
+              opacity: heroVisible ? 1 : 0,
+              transform: heroVisible ? "translateY(0)" : "translateY(28px)",
+              transition: "opacity 0.9s ease, transform 0.9s ease",
+            }}
+          >
             <p style={styles.eyebrow}>NEW JERSEY LUXURY REAL ESTATE</p>
             <h1
               style={{
                 ...styles.heroTitle,
-                fontSize: isMobile ? "38px" : "60px",
-                maxWidth: isMobile ? "100%" : "760px",
+                fontSize: isMobile ? "40px" : "66px",
+                letterSpacing: "-0.5px",
+                maxWidth: isMobile ? "100%" : "820px",
               }}
             >
               Elevated representation for buyers, sellers, and investors.
@@ -156,465 +216,529 @@ export default function App() {
             </p>
 
             <div style={styles.heroButtons}>
-              <a href="#contact" style={styles.primaryBtn}>
+              <a
+                href="#contact"
+                style={styles.primaryBtn}
+                onMouseEnter={handleButtonEnter}
+                onMouseLeave={handleButtonLeave}
+              >
                 Schedule a Consultation
               </a>
-              <a href="#valuation" style={styles.primaryBtn}>
+              <a
+                href="#valuation"
+                style={styles.primaryBtn}
+                onMouseEnter={handleButtonEnter}
+                onMouseLeave={handleButtonLeave}
+              >
                 What’s My Home Worth?
               </a>
-              <a href="#markets" style={styles.secondaryBtn}>
+              <a
+                href="#markets"
+                style={styles.secondaryBtn}
+                onMouseEnter={handleButtonEnter}
+                onMouseLeave={handleButtonLeave}
+              >
                 Explore Markets
               </a>
             </div>
           </div>
-
-        
         </div>
       </section>
 
-      <section id="about" style={styles.section}>
-        <div
-          style={{
-            ...styles.sectionInner,
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-            gap: isMobile ? "28px" : "48px",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "flex-start" }}>
-            <img
-  src="/images/brian.png"
-  alt="Brian DeMarco"
-  style={{
-    width: "100%",
-    maxWidth: "520px",
-    borderRadius: "22px",
-    objectFit: "cover",
-    boxShadow: "0 25px 70px rgba(0,0,0,0.5)",
-  }}
-/>
-          </div>
-
-          <div>
-            <p style={styles.sectionEyebrow}>ABOUT</p>
-
-            <h2
+      <RevealSection>
+        <section id="about" style={styles.section}>
+          <div
+            style={{
+              ...styles.sectionInner,
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "1.02fr 0.98fr",
+              gap: isMobile ? "28px" : "56px",
+              alignItems: "stretch",
+            }}
+          >
+            <div
               style={{
-                ...styles.sectionTitle,
-                fontSize: isMobile ? "30px" : "42px",
+                display: "flex",
+                justifyContent: "stretch",
+                alignItems: "stretch",
               }}
             >
-              A disciplined approach. A strategic advantage.
-            </h2>
-
-            <p style={styles.sectionText}>
-              My background in the Marine Corps, law enforcement, aviation, and
-              academics gives me a unique edge in real estate — and partnering
-              with my uncle, who has spent more than 30 years mastering this
-              industry, elevates that even further.
-            </p>
-
-            <p style={styles.sectionText}>
-              Clients get the best of both worlds: seasoned experience, paired
-              with direct execution.
-            </p>
-
-            <p style={styles.sectionText}>
-              Our office completed over $1.1 billion of real estate transactions
-              in 2025, using strategic tools to deliver exceptional results.
-            </p>
-
-            <p style={styles.sectionText}>
-              Find out what your home could be worth with the right
-              preparation—I’d love to show you what’s possible.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section id="markets" style={styles.darkSection}>
-        <div style={styles.sectionInner}>
-          <p style={styles.sectionEyebrow}>FEATURED MARKETS</p>
-          <h2
-            style={{
-              ...styles.sectionTitle,
-              fontSize: isMobile ? "30px" : "40px",
-            }}
-          >
-            Distinctive communities. Tailored strategy.
-          </h2>
-
-          <div
-            style={{
-              ...styles.cardGrid,
-              gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-            }}
-          >
-            <div style={styles.marketCard}>
-              <h3 style={styles.cardTitle}>Sleepy Hollow</h3>
-              <p style={styles.cardText}>
-                Character, privacy, and standout homes in one of the area’s most
-                recognizable neighborhoods.
-              </p>
+              <img
+                src="/images/brian.png"
+                alt="Brian DeMarco"
+                style={{
+                  width: "100%",
+                  maxWidth: "100%",
+                  minHeight: isMobile ? "340px" : "100%",
+                  borderRadius: "22px",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  boxShadow: "0 25px 70px rgba(0,0,0,0.5)",
+                }}
+              />
             </div>
 
-            <div style={styles.marketCard}>
-              <h3 style={styles.cardTitle}>Westfield</h3>
-              <p style={styles.cardText}>
-                A highly desirable market known for lifestyle, community appeal,
-                and strong buyer demand.
-              </p>
-            </div>
+            <div style={styles.aboutTextWrap}>
+              <p style={styles.sectionEyebrow}>ABOUT</p>
 
-            <div style={styles.marketCard}>
-              <h3 style={styles.cardTitle}>Short Hills</h3>
-              <p style={styles.cardText}>
-                Luxury positioning, premium presentation, and elevated client
-                expectations at the high end of the market.
+              <h2
+                style={{
+                  ...styles.sectionTitle,
+                  fontSize: isMobile ? "30px" : "42px",
+                }}
+              >
+                A disciplined approach. A strategic advantage.
+              </h2>
+
+              <p style={styles.sectionText}>
+                My background in the Marine Corps, law enforcement, aviation,
+                and academics gives me a unique edge in real estate — and
+                partnering with my uncle, who has spent more than 30 years
+                mastering this industry, elevates that even further.
+              </p>
+
+              <p style={styles.sectionText}>
+                Clients get the best of both worlds: seasoned experience, paired
+                with direct execution.
+              </p>
+
+              <p style={styles.sectionText}>
+                Our office completed over $1.1 billion of real estate
+                transactions in 2025, using strategic tools to deliver
+                exceptional results.
+              </p>
+
+              <p style={styles.sectionText}>
+                Find out what your home could be worth with the right
+                preparation—I’d love to show you what’s possible.
               </p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </RevealSection>
 
-      <section style={styles.section}>
-        <div style={styles.sectionInner}>
-          <p style={styles.sectionEyebrow}>SERVICES</p>
-          <h2
-            style={{
-              ...styles.sectionTitle,
-              fontSize: isMobile ? "30px" : "40px",
-            }}
-          >
-            Representation designed around results.
-          </h2>
-
-          <div
-            style={{
-              ...styles.cardGrid,
-              gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-            }}
-          >
-            <div style={styles.serviceCard}>
-              <h3 style={styles.cardTitle}>Buy</h3>
-              <p style={styles.cardText}>
-                Clear guidance, strong positioning, and a focused search
-                strategy tailored to your goals.
-              </p>
-            </div>
-
-            <div style={styles.serviceCard}>
-              <h3 style={styles.cardTitle}>Sell</h3>
-              <p style={styles.cardText}>
-                Thoughtful pricing, presentation, and marketing designed to
-                maximize visibility and value.
-              </p>
-            </div>
-
-            <div style={styles.serviceCard}>
-              <h3 style={styles.cardTitle}>Invest</h3>
-              <p style={styles.cardText}>
-                Opportunities approached with discipline, market awareness, and
-                long-term perspective.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="valuation" style={styles.valuationSection}>
-        <div
-          style={{
-            ...styles.valuationInner,
-            gridTemplateColumns: isMobile ? "1fr" : "1.05fr 0.95fr",
-            gap: isMobile ? "28px" : "38px",
-          }}
-        >
-          <div>
-            <p style={styles.sectionEyebrow}>HOME VALUATION</p>
+      <RevealSection delay={0.05}>
+        <section id="markets" style={styles.darkSection}>
+          <div style={styles.sectionInner}>
+            <p style={styles.sectionEyebrow}>FEATURED MARKETS</p>
             <h2
               style={{
                 ...styles.sectionTitle,
                 fontSize: isMobile ? "30px" : "40px",
               }}
             >
-              What could your home be worth with the right preparation?
+              Distinctive communities. Tailored strategy.
             </h2>
-            <p style={styles.sectionText}>
-              Pricing, presentation, timing, and positioning all matter. Get a
-              more strategic look at your property’s potential value and what
-              may help maximize it before going to market.
-            </p>
-            <p style={styles.sectionText}>
-              Tell me a little about your home, and I’ll follow up with next
-              steps.
-            </p>
-          </div>
 
-          <div style={styles.formWrap}>
-            <form onSubmit={handleSubmit} style={styles.form}>
-              <input type="hidden" name="formType" value="home-valuation" />
-              <input type="hidden" name="source" value="valuation-section" />
-
-              <label style={styles.label}>
-                Name
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  style={styles.input}
-                  placeholder="Your name"
-                />
-              </label>
-
-              <label style={styles.label}>
-                Email
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  style={styles.input}
-                  placeholder="you@example.com"
-                />
-              </label>
-
-              <label style={styles.label}>
-                Phone
-                <input
-                  type="tel"
-                  name="phone"
-                  style={styles.input}
-                  placeholder="(908) 555-5555"
-                />
-              </label>
-
-              <label style={styles.label}>
-                Property Address
-                <input
-                  type="text"
-                  name="propertyAddress"
-                  required
-                  style={styles.input}
-                  placeholder="123 Main St, Town, NJ"
-                />
-              </label>
-
-              <label style={styles.label}>
-                Tell me about the home
-                <textarea
-                  name="message"
-                  required
-                  rows="5"
-                  style={styles.textarea}
-                  placeholder="Beds, baths, updates, condition, timeline, and anything else helpful..."
-                />
-              </label>
-
-              <button type="submit" style={styles.submitBtn}>
-                {status === "sending" ? "Sending..." : "Request Home Value Review"}
-              </button>
-
-              {status === "success" && (
-                <p style={styles.successMsg}>
-                  Thank you — your valuation request was sent successfully.
+            <div
+              style={{
+                ...styles.cardGrid,
+                gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+              }}
+            >
+              <div style={styles.marketCard}>
+                <h3 style={styles.cardTitle}>Sleepy Hollow</h3>
+                <p style={styles.cardText}>
+                  Character, privacy, and standout homes in one of the area’s
+                  most recognizable neighborhoods.
                 </p>
-              )}
-
-              {status === "error" && (
-                <p style={styles.errorMsg}>
-                  Something went wrong. Please try again.
-                </p>
-              )}
-            </form>
-          </div>
-        </div>
-      </section>
-
-      <section style={styles.darkSection}>
-        <div style={styles.sectionInner}>
-          <p style={styles.sectionEyebrow}>FEATURED LISTINGS</p>
-          <h2
-            style={{
-              ...styles.sectionTitle,
-              fontSize: isMobile ? "30px" : "40px",
-            }}
-          >
-            Selected homes and standout opportunities.
-          </h2>
-
-          <div
-            style={{
-              ...styles.listingsGrid,
-              gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-            }}
-          >
-            {featuredListings.map((listing) => (
-              <div key={listing.title} style={styles.listingCard}>
-                <img
-                  src={listing.image}
-                  alt={listing.title}
-                  style={styles.listingImage}
-                />
-                <div style={styles.listingBody}>
-                  <div style={styles.listingPrice}>{listing.price}</div>
-                  <h3 style={styles.cardTitle}>{listing.title}</h3>
-                  <p style={styles.listingTown}>{listing.town}</p>
-                  <p style={styles.cardText}>{listing.details}</p>
-                  <a href={listing.link} style={styles.secondaryBtn}>
-                    Request Details
-                  </a>
-                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      <section style={styles.credSection}>
-        <div style={styles.sectionInner}>
+              <div style={styles.marketCard}>
+                <h3 style={styles.cardTitle}>Westfield</h3>
+                <p style={styles.cardText}>
+                  A highly desirable market known for lifestyle, community
+                  appeal, and strong buyer demand.
+                </p>
+              </div>
+
+              <div style={styles.marketCard}>
+                <h3 style={styles.cardTitle}>Short Hills</h3>
+                <p style={styles.cardText}>
+                  Luxury positioning, premium presentation, and elevated client
+                  expectations at the high end of the market.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </RevealSection>
+
+      <RevealSection delay={0.08}>
+        <section style={styles.section}>
+          <div style={styles.sectionInner}>
+            <p style={styles.sectionEyebrow}>SERVICES</p>
+            <h2
+              style={{
+                ...styles.sectionTitle,
+                fontSize: isMobile ? "30px" : "40px",
+              }}
+            >
+              Representation designed around results.
+            </h2>
+
+            <div
+              style={{
+                ...styles.cardGrid,
+                gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+              }}
+            >
+              <div style={styles.serviceCard}>
+                <h3 style={styles.cardTitle}>Buy</h3>
+                <p style={styles.cardText}>
+                  Clear guidance, strong positioning, and a focused search
+                  strategy tailored to your goals.
+                </p>
+              </div>
+
+              <div style={styles.serviceCard}>
+                <h3 style={styles.cardTitle}>Sell</h3>
+                <p style={styles.cardText}>
+                  Thoughtful pricing, presentation, and marketing designed to
+                  maximize visibility and value.
+                </p>
+              </div>
+
+              <div style={styles.serviceCard}>
+                <h3 style={styles.cardTitle}>Invest</h3>
+                <p style={styles.cardText}>
+                  Opportunities approached with discipline, market awareness,
+                  and long-term perspective.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </RevealSection>
+
+      <RevealSection delay={0.1}>
+        <section id="valuation" style={styles.valuationSection}>
           <div
             style={{
-              ...styles.credTop,
-              flexDirection: isMobile ? "column" : "row",
-              alignItems: isMobile ? "flex-start" : "center",
+              ...styles.valuationInner,
+              gridTemplateColumns: isMobile ? "1fr" : "1.05fr 0.95fr",
+              gap: isMobile ? "28px" : "38px",
             }}
           >
             <div>
-              <p style={styles.sectionEyebrow}>CREDIBILITY</p>
+              <p style={styles.sectionEyebrow}>HOME VALUATION</p>
               <h2
                 style={{
                   ...styles.sectionTitle,
                   fontSize: isMobile ? "30px" : "40px",
                 }}
               >
-                Built on trust, discipline, and execution.
+                What could your home be worth with the right preparation?
               </h2>
+              <p style={styles.sectionText}>
+                Pricing, presentation, timing, and positioning all matter. Get
+                a more strategic look at your property’s potential value and
+                what may help maximize it before going to market.
+              </p>
+              <p style={styles.sectionText}>
+                Tell me a little about your home, and I’ll follow up with next
+                steps.
+              </p>
             </div>
 
-            <div style={styles.credBadge}>
-              <div style={styles.credNumber}>$1.1B+</div>
-              <div style={styles.credLabel}>Office sales volume in 2025</div>
+            <div style={styles.formWrap}>
+              <form onSubmit={handleSubmit} style={styles.form}>
+                <input type="hidden" name="formType" value="home-valuation" />
+                <input type="hidden" name="source" value="valuation-section" />
+
+                <label style={styles.label}>
+                  Name
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    style={styles.input}
+                    placeholder="Your name"
+                  />
+                </label>
+
+                <label style={styles.label}>
+                  Email
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    style={styles.input}
+                    placeholder="you@example.com"
+                  />
+                </label>
+
+                <label style={styles.label}>
+                  Phone
+                  <input
+                    type="tel"
+                    name="phone"
+                    style={styles.input}
+                    placeholder="(908) 555-5555"
+                  />
+                </label>
+
+                <label style={styles.label}>
+                  Property Address
+                  <input
+                    type="text"
+                    name="propertyAddress"
+                    required
+                    style={styles.input}
+                    placeholder="123 Main St, Town, NJ"
+                  />
+                </label>
+
+                <label style={styles.label}>
+                  Tell me about the home
+                  <textarea
+                    name="message"
+                    required
+                    rows="5"
+                    style={styles.textarea}
+                    placeholder="Beds, baths, updates, condition, timeline, and anything else helpful..."
+                  />
+                </label>
+
+                <button
+                  type="submit"
+                  style={styles.submitBtn}
+                  onMouseEnter={handleButtonEnter}
+                  onMouseLeave={handleButtonLeave}
+                >
+                  {status === "sending"
+                    ? "Sending..."
+                    : "Request Home Value Review"}
+                </button>
+
+                {status === "success" && (
+                  <p style={styles.successMsg}>
+                    Thank you — your valuation request was sent successfully.
+                  </p>
+                )}
+
+                {status === "error" && (
+                  <p style={styles.errorMsg}>
+                    Something went wrong. Please try again.
+                  </p>
+                )}
+              </form>
             </div>
           </div>
+        </section>
+      </RevealSection>
 
-          <div
-            style={{
-              ...styles.reviewsGrid,
-              gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-            }}
-          >
-            {reviewHighlights.map((review, index) => (
-              <div key={index} style={styles.reviewCard}>
-                <div style={styles.stars}>★★★★★</div>
-                <p style={styles.reviewText}>“{review.quote}”</p>
-                <div style={styles.reviewSource}>{review.source}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="contact" style={styles.contactSection}>
-        <div
-          style={{
-            ...styles.contactInner,
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-            gap: isMobile ? "28px" : "36px",
-          }}
-        >
-          <div>
-            <p style={styles.sectionEyebrow}>CONTACT</p>
+      <RevealSection delay={0.12}>
+        <section style={styles.darkSection}>
+          <div style={styles.sectionInner}>
+            <p style={styles.sectionEyebrow}>FEATURED LISTINGS</p>
             <h2
               style={{
                 ...styles.sectionTitle,
                 fontSize: isMobile ? "30px" : "40px",
               }}
             >
-              Start the conversation.
+              Selected homes and standout opportunities.
             </h2>
-            <p style={styles.sectionText}>
-              Whether you’re buying, selling, or investing, reach out for a
-              confidential consultation and a tailored strategy.
-            </p>
 
-            <div style={styles.contactInfoCard}>
-              <p style={styles.contactLine}>
-                <strong>Brian DeMarco</strong>
-              </p>
-              <p style={styles.contactLine}>(908) 812-5014</p>
-              <p style={styles.contactLine}>briannjrealtor@gmail.com</p>
-              <p style={styles.contactLine}>NewJerseyLuxRealty.com</p>
+            <div
+              style={{
+                ...styles.listingsGrid,
+                gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+              }}
+            >
+              {featuredListings.map((listing) => (
+                <div key={listing.title} style={styles.listingCard}>
+                  <img
+                    src={listing.image}
+                    alt={listing.title}
+                    style={styles.listingImage}
+                  />
+                  <div style={styles.listingBody}>
+                    <div style={styles.listingPrice}>{listing.price}</div>
+                    <h3 style={styles.cardTitle}>{listing.title}</h3>
+                    <p style={styles.listingTown}>{listing.town}</p>
+                    <p style={styles.cardText}>{listing.details}</p>
+                    <a
+                      href={listing.link}
+                      style={styles.secondaryBtn}
+                      onMouseEnter={handleButtonEnter}
+                      onMouseLeave={handleButtonLeave}
+                    >
+                      Request Details
+                    </a>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
+        </section>
+      </RevealSection>
 
-          <div style={styles.formWrap}>
-            <form onSubmit={handleSubmit} style={styles.form}>
-              <input type="hidden" name="formType" value="lead-form" />
-              <input type="hidden" name="source" value="website-homepage" />
+      <RevealSection delay={0.14}>
+        <section style={styles.credSection}>
+          <div style={styles.sectionInner}>
+            <div
+              style={{
+                ...styles.credTop,
+                flexDirection: isMobile ? "column" : "row",
+                alignItems: isMobile ? "flex-start" : "center",
+              }}
+            >
+              <div>
+                <p style={styles.sectionEyebrow}>CREDIBILITY</p>
+                <h2
+                  style={{
+                    ...styles.sectionTitle,
+                    fontSize: isMobile ? "30px" : "40px",
+                  }}
+                >
+                  Built on trust, discipline, and execution.
+                </h2>
+              </div>
 
-              <label style={styles.label}>
-                Name
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  style={styles.input}
-                  placeholder="Your name"
-                />
-              </label>
+              <div style={styles.credBadge}>
+                <div style={styles.credNumber}>$1.1B+</div>
+                <div style={styles.credLabel}>Office sales volume in 2025</div>
+              </div>
+            </div>
 
-              <label style={styles.label}>
-                Email
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  style={styles.input}
-                  placeholder="you@example.com"
-                />
-              </label>
-
-              <label style={styles.label}>
-                Phone
-                <input
-                  type="tel"
-                  name="phone"
-                  style={styles.input}
-                  placeholder="(908) 555-5555"
-                />
-              </label>
-
-              <label style={styles.label}>
-                How can I help?
-                <textarea
-                  name="message"
-                  required
-                  rows="5"
-                  style={styles.textarea}
-                  placeholder="Tell me a bit about what you're looking for..."
-                />
-              </label>
-
-              <button type="submit" style={styles.submitBtn}>
-                {status === "sending" ? "Sending..." : "Send Inquiry"}
-              </button>
-
-              {status === "success" && (
-                <p style={styles.successMsg}>
-                  Thank you — your message was sent successfully.
-                </p>
-              )}
-
-              {status === "error" && (
-                <p style={styles.errorMsg}>
-                  Something went wrong. Please try again.
-                </p>
-              )}
-            </form>
+            <div
+              style={{
+                ...styles.reviewsGrid,
+                gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+              }}
+            >
+              {reviewHighlights.map((review, index) => (
+                <div key={index} style={styles.reviewCard}>
+                  <div style={styles.stars}>★★★★★</div>
+                  <p style={styles.reviewText}>“{review.quote}”</p>
+                  <div style={styles.reviewSource}>{review.source}</div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </RevealSection>
+
+      <RevealSection delay={0.16}>
+        <section id="contact" style={styles.contactSection}>
+          <div
+            style={{
+              ...styles.contactInner,
+              gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+              gap: isMobile ? "28px" : "36px",
+            }}
+          >
+            <div>
+              <p style={styles.sectionEyebrow}>CONTACT</p>
+              <h2
+                style={{
+                  ...styles.sectionTitle,
+                  fontSize: isMobile ? "30px" : "40px",
+                }}
+              >
+                Start the conversation.
+              </h2>
+              <p style={styles.sectionText}>
+                Whether you’re buying, selling, or investing, reach out for a
+                confidential consultation and a tailored strategy.
+              </p>
+
+              <div style={styles.contactInfoCard}>
+                <p style={styles.contactLine}>
+                  <strong>Brian DeMarco</strong>
+                </p>
+                <p style={styles.contactLine}>
+                  <a href="tel:19088125014" style={styles.footerContactLink}>
+                    (908) 812-5014
+                  </a>
+                </p>
+                <p style={styles.contactLine}>
+                  <a
+                    href="mailto:briannjrealtor@gmail.com"
+                    style={styles.footerContactLink}
+                  >
+                    briannjrealtor@gmail.com
+                  </a>
+                </p>
+                <p style={styles.contactLine}>NewJerseyLuxRealty.com</p>
+              </div>
+            </div>
+
+            <div style={styles.formWrap}>
+              <form onSubmit={handleSubmit} style={styles.form}>
+                <input type="hidden" name="formType" value="lead-form" />
+                <input type="hidden" name="source" value="website-homepage" />
+
+                <label style={styles.label}>
+                  Name
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    style={styles.input}
+                    placeholder="Your name"
+                  />
+                </label>
+
+                <label style={styles.label}>
+                  Email
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    style={styles.input}
+                    placeholder="you@example.com"
+                  />
+                </label>
+
+                <label style={styles.label}>
+                  Phone
+                  <input
+                    type="tel"
+                    name="phone"
+                    style={styles.input}
+                    placeholder="(908) 555-5555"
+                  />
+                </label>
+
+                <label style={styles.label}>
+                  How can I help?
+                  <textarea
+                    name="message"
+                    required
+                    rows="5"
+                    style={styles.textarea}
+                    placeholder="Tell me a bit about what you're looking for..."
+                  />
+                </label>
+
+                <button
+                  type="submit"
+                  style={styles.submitBtn}
+                  onMouseEnter={handleButtonEnter}
+                  onMouseLeave={handleButtonLeave}
+                >
+                  {status === "sending" ? "Sending..." : "Send Inquiry"}
+                </button>
+
+                {status === "success" && (
+                  <p style={styles.successMsg}>
+                    Thank you — your message was sent successfully.
+                  </p>
+                )}
+
+                {status === "error" && (
+                  <p style={styles.errorMsg}>
+                    Something went wrong. Please try again.
+                  </p>
+                )}
+              </form>
+            </div>
+          </div>
+        </section>
+      </RevealSection>
     </div>
   );
 }
@@ -651,6 +775,7 @@ const styles = {
     color: "#d4af37",
     fontSize: "22px",
     lineHeight: 1,
+    textShadow: "0 0 10px rgba(212,175,55,0.2)",
   },
 
   brand: {
@@ -677,7 +802,7 @@ const styles = {
     color: "#d7d1c3",
     textDecoration: "none",
     display: "block",
-    transition: "0.3s",
+    transition: "all 0.3s ease",
   },
 
   hero: {
@@ -701,12 +826,7 @@ const styles = {
   },
 
   heroLeft: {
-    maxWidth: "760px",
-  },
-
-  heroRight: {
-    display: "flex",
-    justifyContent: "center",
+    maxWidth: "820px",
   },
 
   eyebrow: {
@@ -716,6 +836,7 @@ const styles = {
     letterSpacing: "0.22em",
     textTransform: "uppercase",
     marginBottom: "18px",
+    textShadow: "0 0 10px rgba(212,175,55,0.28)",
   },
 
   heroTitle: {
@@ -727,7 +848,7 @@ const styles = {
   heroText: {
     lineHeight: 1.7,
     color: "#ddd6c6",
-    maxWidth: "640px",
+    maxWidth: "700px",
     marginBottom: "30px",
   },
 
@@ -745,6 +866,7 @@ const styles = {
     borderRadius: "999px",
     textDecoration: "none",
     fontWeight: 700,
+    transition: "all 0.3s ease",
   },
 
   secondaryBtn: {
@@ -755,40 +877,7 @@ const styles = {
     borderRadius: "999px",
     textDecoration: "none",
     fontWeight: 700,
-  },
-
-  photoCard: {
-    width: "100%",
-    background: "rgba(10,10,10,0.88)",
-    border: "1px solid rgba(212,175,55,0.2)",
-    borderRadius: "22px",
-    overflow: "hidden",
-    boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
-  },
-
-  photo: {
-    display: "block",
-    width: "100%",
-    objectFit: "cover",
-    objectPosition: "center top",
-    backgroundColor: "#111",
-  },
-
-  photoInfo: {
-    padding: "18px 20px 22px",
-  },
-
-  photoName: {
-    fontSize: "24px",
-    fontWeight: 700,
-    marginBottom: "6px",
-  },
-
-  photoRole: {
-    fontSize: "14px",
-    color: "#c8b889",
-    letterSpacing: "0.08em",
-    textTransform: "uppercase",
+    transition: "all 0.3s ease",
   },
 
   section: {
@@ -806,6 +895,12 @@ const styles = {
     margin: "0 auto",
   },
 
+  aboutTextWrap: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+
   sectionEyebrow: {
     color: "#d4af37",
     fontSize: "12px",
@@ -813,6 +908,7 @@ const styles = {
     letterSpacing: "0.2em",
     textTransform: "uppercase",
     marginBottom: "10px",
+    textShadow: "0 0 10px rgba(212,175,55,0.28)",
   },
 
   sectionTitle: {
@@ -838,6 +934,7 @@ const styles = {
     borderRadius: "20px",
     padding: "28px",
     background: "#101010",
+    transition: "all 0.3s ease",
   },
 
   serviceCard: {
@@ -845,6 +942,7 @@ const styles = {
     padding: "28px",
     background: "#111",
     border: "1px solid rgba(255,255,255,0.06)",
+    transition: "all 0.3s ease",
   },
 
   cardTitle: {
@@ -886,6 +984,7 @@ const styles = {
     backgroundColor: "#101010",
     border: "1px solid rgba(212,175,55,0.16)",
     boxShadow: "0 14px 40px rgba(0,0,0,0.22)",
+    transition: "all 0.3s ease",
   },
 
   listingImage: {
@@ -905,6 +1004,7 @@ const styles = {
     color: "#d4af37",
     fontSize: "26px",
     fontWeight: 800,
+    textShadow: "0 0 12px rgba(212,175,55,0.24)",
   },
 
   listingTown: {
@@ -938,6 +1038,7 @@ const styles = {
     fontSize: "34px",
     fontWeight: 800,
     lineHeight: 1.1,
+    textShadow: "0 0 12px rgba(212,175,55,0.3)",
   },
 
   credLabel: {
@@ -956,6 +1057,7 @@ const styles = {
     padding: "26px",
     backgroundColor: "#111",
     border: "1px solid rgba(255,255,255,0.06)",
+    transition: "all 0.3s ease",
   },
 
   stars: {
@@ -963,6 +1065,7 @@ const styles = {
     fontSize: "18px",
     letterSpacing: "0.12em",
     marginBottom: "14px",
+    textShadow: "0 0 10px rgba(212,175,55,0.2)",
   },
 
   reviewText: {
@@ -1007,6 +1110,11 @@ const styles = {
     lineHeight: 1.8,
     color: "#e6dfcf",
     margin: "0 0 6px 0",
+  },
+
+  footerContactLink: {
+    color: "#e6dfcf",
+    textDecoration: "none",
   },
 
   formWrap: {
@@ -1060,6 +1168,7 @@ const styles = {
     fontSize: "15px",
     fontWeight: 800,
     cursor: "pointer",
+    transition: "all 0.3s ease",
   },
 
   successMsg: {
