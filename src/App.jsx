@@ -1,7 +1,50 @@
 import React, { useEffect, useState } from "react";
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/myknooen";
+const featuredListings = [
+  {
+    title: "Sleepy Hollow Estate",
+    town: "Plainfield, NJ",
+    price: "$1,895,000",
+    details: "5 Beds • 4 Baths • Resort-Style Pool",
+    image: "/images/sleepy-hollow.jpg",
+    link: "#contact",
+  },
+  {
+    title: "Westfield Luxury Colonial",
+    town: "Westfield, NJ",
+    price: "$1,425,000",
+    details: "4 Beds • 3.5 Baths • Updated Interiors",
+    image: "/images/sleepy-hollow.jpg",
+    link: "#contact",
+  },
+  {
+    title: "Short Hills Custom Residence",
+    town: "Short Hills, NJ",
+    price: "$2,750,000",
+    details: "6 Beds • 5.5 Baths • Prime Location",
+    image: "/images/sleepy-hollow.jpg",
+    link: "#contact",
+  },
+];
 
+const reviewHighlights = [
+  {
+    quote:
+      "Brian brings professionalism, preparation, and strong communication to every step of the process.",
+    source: "Client Experience",
+  },
+  {
+    quote:
+      "Responsive, strategic, and trustworthy. We always felt informed and confident throughout our transaction.",
+    source: "Buyer Review",
+  },
+  {
+    quote:
+      "A polished approach with excellent attention to detail and clear market insight.",
+    source: "Seller Review",
+  },
+];
 export default function App() {
   const [status, setStatus] = useState("");
   const [isMobile, setIsMobile] = useState(false);
@@ -139,47 +182,69 @@ export default function App() {
         </div>
       </section>
 
-      <section style={styles.statsSection}>
-        <div
-          style={{
-            ...styles.statsGrid,
-            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-          }}
-        >
-          <div style={styles.statCard}>
-            <div style={styles.statNumber}>Luxury</div>
-            <div style={styles.statLabel}>Brand Positioning</div>
-          </div>
-          <div style={styles.statCard}>
-            <div style={styles.statNumber}>Strategic</div>
-            <div style={styles.statLabel}>Buyer & Seller Guidance</div>
-          </div>
-          <div style={styles.statCard}>
-            <div style={styles.statNumber}>Focused</div>
-            <div style={styles.statLabel}>New Jersey Market Expertise</div>
-          </div>
-        </div>
-      </section>
 
-      <section id="about" style={styles.section}>
-        <div style={styles.sectionInner}>
-          <p style={styles.sectionEyebrow}>ABOUT</p>
-          <h2
-            style={{
-              ...styles.sectionTitle,
-              fontSize: isMobile ? "30px" : "40px",
-            }}
-          >
-            A refined, disciplined approach to real estate.
-          </h2>
-          <p style={styles.sectionText}>
-            Brian DeMarco brings a polished, high-trust approach to New Jersey
-            real estate. Built on service, preparation, and strong execution,
-            the brand is designed to help clients move confidently whether
-            they’re purchasing, selling, or investing.
-          </p>
-        </div>
-      </section>
+    <section id="about" style={styles.section}>
+  <div
+    style={{
+      ...styles.sectionInner,
+      display: "grid",
+      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+      gap: isMobile ? "28px" : "48px",
+      alignItems: "center",
+    }}
+  >
+    {/* LEFT SIDE - REAL IMAGE */}
+   <div style={{ display: "flex", justifyContent: "center" }}>
+  <img
+    src="/images/brian.png"
+    alt="Brian DeMarco"
+    style={{
+      width: "100%",
+      maxWidth: "420px",
+      borderRadius: "18px",
+      objectFit: "cover",
+      boxShadow: "0 20px 50px rgba(0,0,0,0.4)",
+    }}
+  />
+</div>
+
+    {/* RIGHT SIDE - TEXT */}
+    <div>
+      <p style={styles.sectionEyebrow}>ABOUT</p>
+
+      <h2
+        style={{
+          ...styles.sectionTitle,
+          fontSize: isMobile ? "30px" : "42px",
+        }}
+      >
+        A disciplined approach. A strategic advantage.
+      </h2>
+
+      <p style={styles.sectionText}>
+        My background in the Marine Corps, law enforcement, aviation, and
+        academics gives me a unique edge in real estate — and partnering with
+        my uncle, who has spent more than 30 years mastering this industry,
+        elevates that even further.
+      </p>
+
+      <p style={styles.sectionText}>
+        Clients get the best of both worlds: seasoned experience, paired with
+        direct execution.
+      </p>
+
+      <p style={styles.sectionText}>
+        Our office completed over $1.1 billion of real estate transactions in
+        2025, using strategic tools to deliver exceptional results.
+      </p>
+
+      <p style={styles.sectionText}>
+        Find out what your home could be worth with the right preparation—I’d
+        love to show you what’s possible.
+      </p>
+    </div>
+  </div>
+</section>
 
       <section id="markets" style={styles.darkSection}>
         <div style={styles.sectionInner}>
@@ -270,7 +335,233 @@ export default function App() {
           </div>
         </div>
       </section>
+      <section style={styles.valuationSection}>
+  <div
+    style={{
+      ...styles.valuationInner,
+      gridTemplateColumns: isMobile ? "1fr" : "1.05fr 0.95fr",
+      gap: isMobile ? "28px" : "38px",
+    }}
+  >
+    <div>
+      <p style={styles.sectionEyebrow}>HOME VALUATION</p>
+      <h2
+        style={{
+          ...styles.sectionTitle,
+          fontSize: isMobile ? "30px" : "40px",
+        }}
+      >
+        What could your home be worth with the right preparation?
+      </h2>
+      <p style={styles.sectionText}>
+        Pricing, presentation, timing, and positioning all matter. Get a more
+        strategic look at your property’s potential value and what may help
+        maximize it before going to market.
+      </p>
+      <p style={styles.sectionText}>
+        Tell me a little about your home, and I’ll follow up with next steps.
+      </p>
+    </div>
 
+    <div style={styles.formWrap}>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <input type="hidden" name="formType" value="home-valuation" />
+        <input type="hidden" name="source" value="valuation-section" />
+
+        <label style={styles.label}>
+          Name
+          <input
+            type="text"
+            name="name"
+            required
+            style={styles.input}
+            placeholder="Your name"
+          />
+        </label>
+
+        <label style={styles.label}>
+          Email
+          <input
+            type="email"
+            name="email"
+            required
+            style={styles.input}
+            placeholder="you@example.com"
+          />
+        </label>
+
+        <label style={styles.label}>
+          Phone
+          <input
+            type="tel"
+            name="phone"
+            style={styles.input}
+            placeholder="(908) 555-5555"
+          />
+        </label>
+
+        <label style={styles.label}>
+          Property Address
+          <input
+            type="text"
+            name="propertyAddress"
+            required
+            style={styles.input}
+            placeholder="123 Main St, Town, NJ"
+          />
+        </label>
+
+        <label style={styles.label}>
+          Tell me about the home
+          <textarea
+            name="message"
+            required
+            rows="5"
+            style={styles.textarea}
+            placeholder="Beds, baths, updates, condition, timeline, and anything else helpful..."
+          />
+        </label>
+
+        <button type="submit" style={styles.submitBtn}>
+          {status === "sending" ? "Sending..." : "Request Home Value Review"}
+        </button>
+
+        {status === "success" && (
+          <p style={styles.successMsg}>
+            Thank you — your valuation request was sent successfully.
+          </p>
+        )}
+
+        {status === "error" && (
+          <p style={styles.errorMsg}>
+            Something went wrong. Please try again.
+          </p>
+        )}
+      </form>
+    </div>
+  </div>
+</section>
+<section style={styles.darkSection}>
+  <div style={styles.sectionInner}>
+    <p style={styles.sectionEyebrow}>FEATURED LISTINGS</p>
+    <h2
+      style={{
+        ...styles.sectionTitle,
+        fontSize: isMobile ? "30px" : "40px",
+      }}
+    >
+      Selected homes and standout opportunities.
+    </h2>
+
+<section style={styles.darkSection}>
+  <div style={styles.sectionInner}>
+    <p style={styles.sectionEyebrow}>FEATURED LISTINGS</p>
+    <h2
+      style={{
+        ...styles.sectionTitle,
+        fontSize: isMobile ? "30px" : "40px",
+      }}
+    >
+      Selected homes and standout opportunities.
+    </h2>
+
+    <div
+      style={{
+        ...styles.listingsGrid,
+        gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+      }}
+    >
+      {featuredListings.map((listing) => (
+        <div key={listing.title} style={styles.listingCard}>
+          <img
+            src={listing.image}
+            alt={listing.title}
+            style={styles.listingImage}
+          />
+          <div style={styles.listingBody}>
+            <div style={styles.listingPrice}>{listing.price}</div>
+            <h3 style={styles.cardTitle}>{listing.title}</h3>
+            <p style={styles.listingTown}>{listing.town}</p>
+            <p style={styles.cardText}>{listing.details}</p>
+            <a href={listing.link} style={styles.secondaryBtn}>
+              Request Details
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+    <div
+      style={{
+        ...styles.listingsGrid,
+        gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+      }}
+    >
+      {featuredListings.map((listing) => (
+        <div key={listing.title} style={styles.listingCard}>
+          <img
+            src={listing.image}
+            alt={listing.title}
+            style={styles.listingImage}
+          />
+          <div style={styles.listingBody}>
+            <div style={styles.listingPrice}>{listing.price}</div>
+            <h3 style={styles.cardTitle}>{listing.title}</h3>
+            <p style={styles.listingTown}>{listing.town}</p>
+            <p style={styles.cardText}>{listing.details}</p>
+            <a href={listing.link} style={styles.secondaryBtn}>
+              Request Details
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+<section style={styles.credSection}>
+  <div style={styles.sectionInner}>
+    <div
+      style={{
+        ...styles.credTop,
+        flexDirection: isMobile ? "column" : "row",
+        alignItems: isMobile ? "flex-start" : "center",
+      }}
+    >
+      <div>
+        <p style={styles.sectionEyebrow}>CREDIBILITY</p>
+        <h2
+          style={{
+            ...styles.sectionTitle,
+            fontSize: isMobile ? "30px" : "40px",
+          }}
+        >
+          Built on trust, discipline, and execution.
+        </h2>
+      </div>
+
+      <div style={styles.credBadge}>
+        <div style={styles.credNumber}>$1.1B+</div>
+        <div style={styles.credLabel}>Office sales volume in 2025</div>
+      </div>
+    </div>
+
+    <div
+      style={{
+        ...styles.reviewsGrid,
+        gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+      }}
+    >
+      {reviewHighlights.map((review, index) => (
+        <div key={index} style={styles.reviewCard}>
+          <div style={styles.stars}>★★★★★</div>
+          <p style={styles.reviewText}>“{review.quote}”</p>
+          <div style={styles.reviewSource}>{review.source}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
       <section id="contact" style={styles.contactSection}>
         <div
           style={{
@@ -376,6 +667,126 @@ export default function App() {
 }
 
 const styles = {
+valuationSection: {
+  padding: "84px 32px",
+  background:
+    "linear-gradient(135deg, rgba(212,175,55,0.06), rgba(255,255,255,0.02))",
+  borderTop: "1px solid rgba(212,175,55,0.12)",
+  borderBottom: "1px solid rgba(212,175,55,0.12)",
+},
+
+valuationInner: {
+  maxWidth: "1200px",
+  margin: "0 auto",
+  display: "grid",
+  alignItems: "start",
+},
+
+listingsGrid: {
+  display: "grid",
+  gap: "22px",
+},
+
+listingCard: {
+  overflow: "hidden",
+  borderRadius: "22px",
+  backgroundColor: "#101010",
+  border: "1px solid rgba(212,175,55,0.16)",
+  boxShadow: "0 14px 40px rgba(0,0,0,0.22)",
+},
+
+listingImage: {
+  width: "100%",
+  height: "260px",
+  objectFit: "cover",
+  display: "block",
+},
+
+listingBody: {
+  padding: "22px",
+  display: "grid",
+  gap: "12px",
+},
+
+listingPrice: {
+  color: "#d4af37",
+  fontSize: "26px",
+  fontWeight: 800,
+},
+
+listingTown: {
+  margin: "-6px 0 0 0",
+  color: "#cfc7b6",
+  fontSize: "15px",
+},
+
+credSection: {
+  padding: "84px 32px",
+  backgroundColor: "#0b0b0b",
+},
+
+credTop: {
+  display: "flex",
+  justifyContent: "space-between",
+  gap: "24px",
+  marginBottom: "28px",
+},
+
+credBadge: {
+  border: "1px solid rgba(212,175,55,0.18)",
+  borderRadius: "18px",
+  padding: "20px 24px",
+  background: "#111",
+  minWidth: "240px",
+},
+
+credNumber: {
+  color: "#d4af37",
+  fontSize: "34px",
+  fontWeight: 800,
+  lineHeight: 1.1,
+},
+
+credLabel: {
+  color: "#d7d1c3",
+  fontSize: "14px",
+  marginTop: "8px",
+},
+
+reviewsGrid: {
+  display: "grid",
+  gap: "20px",
+},
+
+reviewCard: {
+  borderRadius: "20px",
+  padding: "26px",
+  backgroundColor: "#111",
+  border: "1px solid rgba(255,255,255,0.06)",
+},
+
+stars: {
+  color: "#d4af37",
+  fontSize: "18px",
+  letterSpacing: "0.12em",
+  marginBottom: "14px",
+},
+
+reviewText: {
+  color: "#e2dccd",
+  fontSize: "17px",
+  lineHeight: 1.8,
+  margin: "0 0 16px 0",
+},
+
+reviewSource: {
+  color: "#bfae7a",
+  fontSize: "13px",
+  fontWeight: 700,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+},
+
   page: {
     fontFamily:
       '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
@@ -543,37 +954,6 @@ const styles = {
     color: "#c8b889",
     letterSpacing: "0.08em",
     textTransform: "uppercase",
-  },
-
-  statsSection: {
-    padding: "28px 32px 18px",
-    backgroundColor: "#0a0a0a",
-  },
-
-  statsGrid: {
-    display: "grid",
-    maxWidth: "1200px",
-    margin: "0 auto",
-    gap: "18px",
-  },
-
-  statCard: {
-    border: "1px solid rgba(212,175,55,0.18)",
-    borderRadius: "18px",
-    padding: "24px",
-    background: "linear-gradient(180deg, #111, #0a0a0a)",
-  },
-
-  statNumber: {
-    fontSize: "28px",
-    fontWeight: 800,
-    color: "#d4af37",
-    marginBottom: "8px",
-  },
-
-  statLabel: {
-    color: "#d8d1c2",
-    fontSize: "15px",
   },
 
   section: {
