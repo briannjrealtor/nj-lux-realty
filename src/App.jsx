@@ -246,76 +246,92 @@ export default function App() {
       </section>
 
       <RevealSection>
-        <section id="about" style={styles.section}>
-          <div
+  <section id="about" style={styles.section}>
+    <div
+      style={{
+        ...styles.sectionInner,
+        display: "grid",
+        gridTemplateColumns: isMobile ? "1fr" : "0.92fr 1.08fr",
+        gap: isMobile ? "28px" : "44px",
+        alignItems: "center",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "stretch",
+          alignItems: "stretch",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: isMobile ? "100%" : "520px",
+            borderRadius: "22px",
+            overflow: "hidden",
+            boxShadow: "0 25px 70px rgba(0,0,0,0.45)",
+            background:
+              "linear-gradient(180deg, rgba(212,175,55,0.08), rgba(255,255,255,0.02))",
+            border: "1px solid rgba(212,175,55,0.14)",
+          }}
+        >
+          <img
+            src="/images/brian-about.jpg"
+            alt="Brian DeMarco"
             style={{
-              ...styles.sectionInner,
-              display: "grid",
-              gridTemplateColumns: isMobile ? "1fr" : "1.02fr 0.98fr",
-              gap: isMobile ? "28px" : "56px",
-              alignItems: "stretch",
+              width: "100%",
+              height: isMobile ? "420px" : "640px",
+              objectFit: "cover",
+              objectPosition: "center top",
+              display: "block",
             }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "stretch",
-                alignItems: "stretch",
-              }}
-            >
-              <img
-                src="/images/brian.png"
-                alt="Brian DeMarco"
-                style={{
-                  width: "100%",
-                  maxWidth: "100%",
-                  minHeight: isMobile ? "340px" : "100%",
-                  borderRadius: "22px",
-                  objectFit: "cover",
-                  objectPosition: "center",
-                  boxShadow: "0 25px 70px rgba(0,0,0,0.5)",
-                }}
-              />
-            </div>
+          />
+        </div>
+      </div>
 
-            <div style={styles.aboutTextWrap}>
-              <p style={styles.sectionEyebrow}>ABOUT</p>
+      <div
+        style={{
+          ...styles.aboutTextWrap,
+          maxWidth: "640px",
+        }}
+      >
+        <p style={styles.sectionEyebrow}>ABOUT</p>
 
-              <h2
-                style={{
-                  ...styles.sectionTitle,
-                  fontSize: isMobile ? "30px" : "42px",
-                }}
-              >
-                A disciplined approach. A strategic advantage.
-              </h2>
+        <h2
+          style={{
+            ...styles.sectionTitle,
+            fontSize: isMobile ? "30px" : "42px",
+            marginBottom: "20px",
+          }}
+        >
+          A disciplined approach. A strategic advantage.
+        </h2>
 
-              <p style={styles.sectionText}>
-                My background in the Marine Corps, law enforcement, aviation,
-                and academics gives me a unique edge in real estate — and
-                partnering with my uncle, who has spent more than 30 years
-                mastering this industry, elevates that even further.
-              </p>
+        <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: "20px" }}>
+          My background in the Marine Corps, law enforcement, aviation, and
+          academics gives me a unique edge in real estate — and partnering with
+          my uncle, who has spent more than 30 years mastering this industry,
+          elevates that even further.
+        </p>
 
-              <p style={styles.sectionText}>
-                Clients get the best of both worlds: seasoned experience, paired
-                with direct execution.
-              </p>
+        <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: "20px" }}>
+          Clients get the best of both worlds: seasoned experience, paired with
+          direct execution.
+        </p>
 
-              <p style={styles.sectionText}>
-                Our office completed over $1.1 billion of real estate
-                transactions in 2025, using strategic tools to deliver
-                exceptional results.
-              </p>
+        <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: "20px" }}>
+          Our office completed over $1.1 billion of real estate transactions in
+          2025, using strategic tools to deliver exceptional results.
+        </p>
 
-              <p style={styles.sectionText}>
-                Find out what your home could be worth with the right
-                preparation—I’d love to show you what’s possible.
-              </p>
-            </div>
-          </div>
-        </section>
-      </RevealSection>
+        <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: 0 }}>
+          Find out what your home could be worth with the right preparation—I’d
+          love to show you what’s possible.
+        </p>
+      </div>
+    </div>
+  </section>
+</RevealSection>
 
       <RevealSection delay={0.05}>
         <section id="markets" style={styles.darkSection}>
