@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/27207458/u7p1qhw/";
-
 const featuredListings = [
   {
     title: "Sleepy Hollow Estate",
@@ -100,25 +98,35 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setStatus("sending");
+   async function handleSubmit(e) {
+  e.preventDefault();
+  setStatus("sending");
 
-    const formData = new FormData(e.target);
-    formData.append("leadType", e.target.dataset.type || "Website Lead");
+  const formData = new FormData(e.target);
 
-    try {
-      await fetch(ZAPIER_WEBHOOK_URL, {
-        method: "POST",
-        body: formData,
-      });
+  const payload = Object.fromEntries(formData.entries());
+  payload.leadType = e.target.dataset.type || "Website Lead";
 
-      setStatus("success");
-      e.target.reset();
-    } catch {
-      setStatus("error");
+  try {
+    const response = await fetch("/api/lead", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("Request failed");
     }
+
+    setStatus("success");
+    e.target.reset();
+  } catch (err) {
+    console.error("Form submit error:", err);
+    setStatus("error");
   }
+}
 
   const handleButtonEnter = (e) => {
     e.currentTarget.style.transform = "translateY(-2px)";
