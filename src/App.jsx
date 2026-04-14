@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/myknooen";
+const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/27207458/u7p1qhw/";
 
 const featuredListings = [
   {
@@ -62,7 +62,7 @@ function RevealSection({ children, delay = 0 }) {
           observer.unobserve(node);
         }
       },
-      { threshold: 0.18 }
+      { threshold: 0.15 }
     );
 
     observer.observe(node);
@@ -74,7 +74,7 @@ function RevealSection({ children, delay = 0 }) {
       ref={ref}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(36px)",
+        transform: visible ? "translateY(0)" : "translateY(28px)",
         transition: `opacity 0.8s ease ${delay}s, transform 0.8s ease ${delay}s`,
       }}
     >
@@ -105,20 +105,16 @@ export default function App() {
     setStatus("sending");
 
     const formData = new FormData(e.target);
+    formData.append("leadType", e.target.dataset.type || "Website Lead");
 
     try {
-      const response = await fetch(FORMSPREE_ENDPOINT, {
+      await fetch(ZAPIER_WEBHOOK_URL, {
         method: "POST",
         body: formData,
-        headers: { Accept: "application/json" },
       });
 
-      if (response.ok) {
-        setStatus("success");
-        e.target.reset();
-      } else {
-        setStatus("error");
-      }
+      setStatus("success");
+      e.target.reset();
     } catch {
       setStatus("error");
     }
@@ -137,38 +133,52 @@ export default function App() {
   return (
     <div style={styles.page}>
       <header
-        style={{
-          ...styles.header,
-          flexDirection: isMobile ? "column" : "row",
-          alignItems: isMobile ? "flex-start" : "center",
-          gap: isMobile ? "12px" : "0",
-        }}
-      >
-        <div style={styles.logoWrap}>
-          <div style={styles.logoMark}>▲</div>
-          <div>
-            <div style={styles.brand}>New Jersey Lux Realty</div>
-            <div style={styles.brandSub}>
-              Luxury Homes • Real Estate • Investments
-            </div>
-          </div>
-        </div>
+  style={{
+    ...styles.header,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  }}
+>
 
-        <div
-          style={{
-            ...styles.headerContact,
-            textAlign: isMobile ? "left" : "right",
-          }}
-        >
-          <div>Brian DeMarco</div>
-          <a href="tel:19088125014" style={styles.contactLink}>
-            (908) 812-5014
-          </a>
-          <a href="mailto:briannjrealtor@gmail.com" style={styles.contactLink}>
-            briannjrealtor@gmail.com
-          </a>
-        </div>
-      </header>
+  {/* LEFT — BRAND */}
+  <div style={styles.logoWrap}>
+    <div style={styles.brand}>New Jersey Lux Realty</div>
+    <div style={styles.brandSub}>
+      Luxury Homes • Real Estate • Investments
+    </div>
+  </div>
+
+  {/* CENTER — COLDWELL BANKER */}
+  <div
+  style={{
+    flex: 1,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  }}
+>
+  <img
+    src="/images/coldwell-banker.png"
+    alt="Coldwell Banker Realty"
+    style={{
+      height: "64px",
+      objectFit: "contain",
+      opacity: 1,
+      filter:
+        "brightness(1.25) contrast(1.1) drop-shadow(0 0 8px rgba(212,175,55,0.35))",
+    }}
+  />
+</div>
+
+  {/* RIGHT — CONTACT */}
+  <div style={styles.headerContact}>
+    <div>Brian DeMarco</div>
+    <div>(908) 812-5014</div>
+    <div>briannjrealtor@gmail.com</div>
+  </div>
+
+</header>
 
       <section
         style={{
@@ -230,7 +240,7 @@ export default function App() {
                 onMouseEnter={handleButtonEnter}
                 onMouseLeave={handleButtonLeave}
               >
-                What’s My Home Worth?
+                What&apos;s My Home Worth?
               </a>
               <a
                 href="#markets"
@@ -246,92 +256,92 @@ export default function App() {
       </section>
 
       <RevealSection>
-  <section id="about" style={styles.section}>
-    <div
-      style={{
-        ...styles.sectionInner,
-        display: "grid",
-        gridTemplateColumns: isMobile ? "1fr" : "0.92fr 1.08fr",
-        gap: isMobile ? "28px" : "44px",
-        alignItems: "center",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "stretch",
-          alignItems: "stretch",
-        }}
-      >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: isMobile ? "100%" : "520px",
-            borderRadius: "22px",
-            overflow: "hidden",
-            boxShadow: "0 25px 70px rgba(0,0,0,0.45)",
-            background:
-              "linear-gradient(180deg, rgba(212,175,55,0.08), rgba(255,255,255,0.02))",
-            border: "1px solid rgba(212,175,55,0.14)",
-          }}
-        >
-          <img
-            src="/images/brian-about.jpg"
-            alt="Brian DeMarco"
+        <section id="about" style={styles.section}>
+          <div
             style={{
-              width: "100%",
-              height: isMobile ? "420px" : "640px",
-              objectFit: "cover",
-              objectPosition: "center top",
-              display: "block",
+              ...styles.sectionInner,
+              display: "grid",
+              gridTemplateColumns: isMobile ? "1fr" : "0.92fr 1.08fr",
+              gap: isMobile ? "28px" : "44px",
+              alignItems: "center",
             }}
-          />
-        </div>
-      </div>
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "stretch",
+                alignItems: "stretch",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  maxWidth: isMobile ? "100%" : "480px",
+                  borderRadius: "22px",
+                  overflow: "hidden",
+                  position: "relative",
+                  boxShadow: "0 40px 100px rgba(0,0,0,0.65)",
+                }}
+              >
+                <img
+                  src="/images/brian-about.jpg"
+                  alt="Brian DeMarco"
+                  style={{
+                    width: "100%",
+                    height: isMobile ? "440px" : "700px",
+                    objectFit: "cover",
+                    objectPosition: "center 15%",
+                    display: "block",
+                    transform: "scale(1.02)",
+                    filter: "brightness(1.12) contrast(1.03)",
+                  }}
+                />
+                <div
+                style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                "linear-gradient(180deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.18) 100%)",
+                pointerEvents: "none",
+                }}
+/>
+              </div>
+            </div>
 
-      <div
-        style={{
-          ...styles.aboutTextWrap,
-          maxWidth: "640px",
-        }}
-      >
-        <p style={styles.sectionEyebrow}>ABOUT</p>
-
-        <h2
-          style={{
-            ...styles.sectionTitle,
-            fontSize: isMobile ? "30px" : "42px",
-            marginBottom: "20px",
-          }}
-        >
-          A disciplined approach. A strategic advantage.
-        </h2>
-
-        <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: "20px" }}>
-          My background in the Marine Corps, law enforcement, aviation, and
-          academics gives me a unique edge in real estate — and partnering with
-          my uncle, who has spent more than 30 years mastering this industry,
-          elevates that even further.
-        </p>
-
-        <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: "20px" }}>
-          Clients get the best of both worlds: seasoned experience, paired with
-          direct execution.
-        </p>
-
-        <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: "20px" }}>
-          Our office completed over $1.1 billion of real estate transactions in
-          2025, using strategic tools to deliver exceptional results.
-        </p>
-
-        <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: 0 }}>
-          Find out what your home could be worth with the right preparation—I’d
-          love to show you what’s possible.
-        </p>
-      </div>
-    </div>
-  </section>
-</RevealSection>
+            <div style={styles.aboutTextWrap}>
+              <p style={styles.sectionEyebrow}>ABOUT</p>
+              <h2
+                style={{
+                  ...styles.sectionTitle,
+                  fontSize: isMobile ? "30px" : "42px",
+                  marginBottom: "20px",
+                }}
+              >
+                A disciplined approach. A strategic advantage.
+              </h2>
+              <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: "20px" }}>
+                My background in the Marine Corps, law enforcement, aviation,
+                and academics gives me a unique edge in real estate — and
+                partnering with my uncle, who has spent more than 30 years
+                mastering this industry, elevates that even further.
+              </p>
+              <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: "20px" }}>
+                Clients get the best of both worlds: seasoned experience, paired
+                with direct execution.
+              </p>
+              <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: "20px" }}>
+                Our office completed over $1.1 billion of real estate
+                transactions in 2025, using strategic tools to deliver
+                exceptional results.
+              </p>
+              <p style={{ ...styles.sectionText, marginTop: 0, marginBottom: 0 }}>
+                Find out what your home could be worth with the right
+                preparation—I&apos;d love to show you what&apos;s possible.
+              </p>
+            </div>
+          </div>
+        </section>
+      </RevealSection>
 
       <RevealSection delay={0.05}>
         <section id="markets" style={styles.darkSection}>
@@ -355,7 +365,7 @@ export default function App() {
               <div style={styles.marketCard}>
                 <h3 style={styles.cardTitle}>Sleepy Hollow</h3>
                 <p style={styles.cardText}>
-                  Character, privacy, and standout homes in one of the area’s
+                  Character, privacy, and standout homes in one of the area&apos;s
                   most recognizable neighborhoods.
                 </p>
               </div>
@@ -448,20 +458,21 @@ export default function App() {
               </h2>
               <p style={styles.sectionText}>
                 Pricing, presentation, timing, and positioning all matter. Get
-                a more strategic look at your property’s potential value and
+                a more strategic look at your property&apos;s potential value and
                 what may help maximize it before going to market.
               </p>
               <p style={styles.sectionText}>
-                Tell me a little about your home, and I’ll follow up with next
+                Tell me a little about your home, and I&apos;ll follow up with next
                 steps.
               </p>
             </div>
 
             <div style={styles.formWrap}>
-              <form onSubmit={handleSubmit} style={styles.form}>
-                <input type="hidden" name="formType" value="home-valuation" />
-                <input type="hidden" name="source" value="valuation-section" />
-
+              <form
+                onSubmit={handleSubmit}
+                data-type="Home Valuation"
+                style={styles.form}
+              >
                 <label style={styles.label}>
                   Name
                   <input
@@ -526,18 +537,6 @@ export default function App() {
                     ? "Sending..."
                     : "Request Home Value Review"}
                 </button>
-
-                {status === "success" && (
-                  <p style={styles.successMsg}>
-                    Thank you — your valuation request was sent successfully.
-                  </p>
-                )}
-
-                {status === "error" && (
-                  <p style={styles.errorMsg}>
-                    Something went wrong. Please try again.
-                  </p>
-                )}
               </form>
             </div>
           </div>
@@ -657,7 +656,7 @@ export default function App() {
                 Start the conversation.
               </h2>
               <p style={styles.sectionText}>
-                Whether you’re buying, selling, or investing, reach out for a
+                Whether you&apos;re buying, selling, or investing, reach out for a
                 confidential consultation and a tailored strategy.
               </p>
 
@@ -683,10 +682,11 @@ export default function App() {
             </div>
 
             <div style={styles.formWrap}>
-              <form onSubmit={handleSubmit} style={styles.form}>
-                <input type="hidden" name="formType" value="lead-form" />
-                <input type="hidden" name="source" value="website-homepage" />
-
+              <form
+                onSubmit={handleSubmit}
+                data-type="Contact Form"
+                style={styles.form}
+              >
                 <label style={styles.label}>
                   Name
                   <input
@@ -738,20 +738,21 @@ export default function App() {
                 >
                   {status === "sending" ? "Sending..." : "Send Inquiry"}
                 </button>
-
-                {status === "success" && (
-                  <p style={styles.successMsg}>
-                    Thank you — your message was sent successfully.
-                  </p>
-                )}
-
-                {status === "error" && (
-                  <p style={styles.errorMsg}>
-                    Something went wrong. Please try again.
-                  </p>
-                )}
               </form>
             </div>
+          </div>
+
+          <div style={styles.statusWrap}>
+            {status === "success" && (
+              <p style={styles.successMsg}>
+                Thank you — your message was sent successfully.
+              </p>
+            )}
+            {status === "error" && (
+              <p style={styles.errorMsg}>
+                Something went wrong. Please try again.
+              </p>
+            )}
           </div>
         </section>
       </RevealSection>
@@ -915,6 +916,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
+    gap: "8px",
   },
 
   sectionEyebrow: {
@@ -1185,6 +1187,11 @@ const styles = {
     fontWeight: 800,
     cursor: "pointer",
     transition: "all 0.3s ease",
+  },
+
+  statusWrap: {
+    maxWidth: "1200px",
+    margin: "18px auto 0",
   },
 
   successMsg: {
