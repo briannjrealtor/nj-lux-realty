@@ -370,27 +370,18 @@ export default function App() {
                 gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
               }}
             >
-              <div style={styles.marketCard}>
-                <h3 style={styles.cardTitle}>Sleepy Hollow</h3>
-                <p style={styles.cardText}>
-                  Character, privacy, and standout homes in one of the area&apos;s
-                  most recognizable neighborhoods.
-                </p>
-              </div>
-
+        
               <div style={styles.marketCard}>
                 <h3 style={styles.cardTitle}>Westfield</h3>
                 <p style={styles.cardText}>
-                  A highly desirable market known for lifestyle, community
-                  appeal, and strong buyer demand.
-                </p>
+                A premier Union County market known for strong demand, lifestyle appeal, and consistent buyer activity.
+              </p>
               </div>
 
               <div style={styles.marketCard}>
                 <h3 style={styles.cardTitle}>Short Hills</h3>
                 <p style={styles.cardText}>
-                  Luxury positioning, premium presentation, and elevated client
-                  expectations at the high end of the market.
+                One of New Jersey’s most prestigious luxury markets, where presentation, pricing, and positioning are everything.
                 </p>
               </div>
             </div>
@@ -414,7 +405,7 @@ export default function App() {
             <div
               style={{
                 ...styles.cardGrid,
-                gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+                gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
               }}
             >
               <div style={styles.serviceCard}>
