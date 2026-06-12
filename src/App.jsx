@@ -292,7 +292,7 @@ export default function App() {
                 }}
               >
                 <img
-                  src="/images/brian-about.jpg"
+                  src="/images/brian-about.jpeg"
                   alt="Brian DeMarco"
                   style={{
                     width: "100%",
